@@ -1,0 +1,27 @@
+{
+  "name": "Laravel Controller",
+  "uses": "php:class",
+  "variables": {
+    "schema": {
+      "type": "object",
+      "properties": {
+        "controller_name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "controller_name"
+      ]
+    },
+    "form": [
+      "controller_name"
+    ]
+  },
+  "definitions": {
+    "class_name": "{{controller_name | capitalize}}Controller",
+    "file_name": "{{controller_name | capitalize}}Controller",
+    "file_path": "app/Http/Controllers/",
+    "namespace": "App\\Http\\Controllers",
+    "extends": "Controller"
+  }
+}
