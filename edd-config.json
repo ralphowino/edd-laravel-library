@@ -2,7 +2,7 @@
   "name": "Laravel",
   "default-version": "master",
   "slug": "laravel",
-  "dependancies": {
+  "dependencies": {
     "ralphowino/edd-php-library": "master"
   }
 }
