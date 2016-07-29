@@ -1,0 +1,70 @@
+description: controller is concerned with the traffic/logic between the Views and Models
+
+uses: php:class
+
+variables:
+  schema:
+    type: object
+    properties:
+      controller_name:
+          type: string
+      resourceful:
+          type: boolean
+          default: false
+      index:
+          type: boolean
+          default: true
+          condition: resourceful
+      create:
+          type: boolean
+          default: true
+          condition: resourceful
+      store:
+          type: boolean
+          default: true
+          condition: resourceful
+      edit:
+          type: boolean
+          default: true
+          condition: resourceful
+      update:
+          type: boolean
+          default: true
+          condition: resourceful
+      destroy:
+          type: boolean
+          default: true
+          condition: resourceful
+    required:
+      - controller_name
+      - resourcefull
+    form:
+      - controller_name
+      - resourcefull
+      - index
+      - create
+      - store
+      - edit
+      - update
+      - destroy
+
+definitions:
+  class_name: "{{controller_name | capitalize}}Controller"
+  file_name: '{{controller_name | str_studly}}Controller'
+  file_path: app/Http/Controllers
+  namespace: App\Http\Controllers
+  imports:
+    -
+      import_name: App\Http\Requests
+    -
+      import_name: Illuminate\Http\Request
+  extends: Controller
+  methods:
+    -
+      method_name: getAttribute
+      method_body: '//Todo: implement {{trait_name}}::{{method.method_name}}'
+      method_scope: public
+      method_parameters:
+        -
+          param_type: string
+          param_name: attr
