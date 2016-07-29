@@ -37,16 +37,16 @@ variables:
           condition: resourceful
     required:
       - controller_name
-      - resourcefull
-    form:
-      - controller_name
-      - resourcefull
-      - index
-      - create
-      - store
-      - edit
-      - update
-      - destroy
+      - resourceful
+  form:
+    - controller_name
+    - resourceful
+    - index
+    - create
+    - store
+    - edit
+    - update
+    - destroy
 
 definitions:
   class_name: "{{controller_name | capitalize}}Controller"
