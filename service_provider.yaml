@@ -1,0 +1,52 @@
+descriptions : this is the central place of all Laravel application bootstrapping.
+
+
+variables:
+  schema:
+    type: object
+    properties:
+      provider_name:
+        type: string
+      boot_body :
+        type : string
+      register_body :
+        type : string
+    required:
+      - provider_name
+
+  form:
+    - *
+uses: php:class
+
+definitions:
+  class_name: '{{provider_name}}' #studly
+  extends: ServiceProvider
+  file_path : app\Providers
+  imports :  Illuminate\Support\ServiceProvider
+
+  methods :
+    - uses : method
+     definitions:
+        method_body: '{{boot_body}}'
+        method_name: boot
+        method_scope: public
+
+    - uses : method
+     definitions:
+        method_body: '{{register_body}}'
+        method_name: register
+        method_scope: public
+
+  namespace : App\Providers
+
+
+
+
+
+
+
+
+
+
+
+

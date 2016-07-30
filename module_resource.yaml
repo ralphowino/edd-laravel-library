@@ -1,0 +1,113 @@
+variables:
+  schema:
+    type: object
+    properties:
+      resource_name:
+        type: string
+    required:
+      - resource_name
+  form:
+    - *
+
+definitions :
+  - uses: model
+    definitions:
+      model_name: '{{resource_name}}' #studly
+      table_name: '{{resource_name}}' #lowercase, plural
+
+  - uses: migration
+    definitions:
+      migration_name: "create_'{{resource_name}}'_table" #lowercase, plural
+      table_name: '{{resource_name}}' #lowercase, plural
+      down_method_body: |
+            Schema::drop({table_name});
+
+  - uses: laravel:controller
+    definitions:
+      controller_name: "'{{resource_name}}'Controller" #studly
+
+  - uses: factory
+    definitions:
+      model_name: "{{resource_name}}" #studly
+
+  - uses: seeder
+    definitions:
+      seeder_name: "'{{resource_name}}'TableSeeder" #studly
+      table: '{{resource_name}}' #plural
+      factory: '{{resource_name}}' #studly
+
+  - uses: view
+    definitions:
+       view_name: index
+       file_path: '{{resource_name}}'
+
+  - uses: view
+    definitions:
+      view: create
+      file_path: "resources/views/'{{resource_name}}'/"
+
+
+  - uses: view
+    definitions:
+      view_name: 'edit'
+      file_path: "resources/views/'{{resource_name}}'/"
+
+
+  - uses: view
+    definitions:
+      view_name: 'show'
+      file_path: "resources/views/'{{resource_name}}'"
+
+  - uses: route_method
+    definitions:
+      controller_name: "'{{resource_name}}'Controller" #studly
+      controller_method: index
+      route_type: get
+      route_name: "list_'{{resource_name}}'"
+
+
+  - uses: route_method
+    definitions:
+      controller_name: "'{{resource_name}}'Controller" #studly
+      controller_method: create
+      route_type: get
+      route_name: "create_'{{resource_name}}'"
+
+  - uses: route_method
+    definitions:
+      controller_name: "'{{resource_name}}'Controller" #studly
+      controller_method: store
+      route_type: post
+      route_name: "store_'{{resource_name}}'"
+
+
+  - uses: route_method
+    definitions:
+      controller_name: "'{{resource_name}}'Controller" #studly
+      controller_method: show
+      route_type: get
+      route_name: "show_'{{resource_name}}'"
+
+
+  - uses: route_method
+    definitions:
+      controller_name: "'{{resource_name}}'Controller" #studly
+      controller_method: edit
+      route_type: get
+      route_name: "edit_'{{resource_name}}'"
+
+
+  - uses: route_method
+    definitions:
+      controller_name: "'{{resource_name}}'Controller" #studly
+      controller_method: update
+      route_type: put
+      route_name: "update_'{{resource_name}}'"
+
+
+  - uses: route_method
+    definitions:
+      controller_name: "'{{resource_name}}'Controller" #studly
+      controller_method: delete
+      route_type: delete
+      route_name: "delete_'{{resource_name}}'"

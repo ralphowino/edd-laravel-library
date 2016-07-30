@@ -1,0 +1,41 @@
+description:  Event listeners receive the event instance in their handle method
+
+variables:
+  schema:
+    type: object
+    properties:
+      __construct_body:
+        type: string
+      event:
+        type: object
+      listener_name:
+        type: string
+      handle_body:
+        type: string
+    requried:
+      - event
+      - listener_name
+  form:
+    - *
+
+uses: php:class
+
+definitions:
+  class_name: '{{listener_name}}' #studly
+  file_path: app/Listeners
+  imports:
+    - Illuminate\Queue\InteractsWithQueue
+    - Illuminate\Contracts\Queue\ShouldQueue
+
+  methods:
+    - uses: method
+      definitions:
+        method_body: '{{__construct_body}}'
+        method_scope: public
+    - uses: method
+      definitions:
+        method_body: '{{handle_body}}'
+        method_scope: public
+        method_params: '{{event}}'
+
+namespace: App\Listeners

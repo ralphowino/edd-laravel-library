@@ -1,0 +1,41 @@
+descriptions : authorizes a request and  validates user input
+
+uses: php:class
+
+variables:
+  schema:
+    type: object
+    properties:
+      authorize_body:
+        type: string
+      rules_body:
+        type: array
+      request_name:
+        type: string
+    required:
+      - request_name
+
+  form:
+    - *
+
+definitions:
+  class_name: '{{request_name}}' #studly
+  extends: Request
+  file_path: app/Http/Requests
+  imports: App\Http\Requests\Request
+  methods:
+    - uses: method
+      definitions:
+        method_body: '{{authorize_body}}'
+        method_name: authorize
+        return_type: boolean
+        method_scope: public
+
+    - uses: method
+      definitions:
+        mothod_body: '{{rules_body}}'
+        method_name: rules
+        return_type: array
+        method_scope: public
+
+  namespace: App\Http\Requests

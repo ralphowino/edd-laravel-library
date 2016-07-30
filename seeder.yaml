@@ -1,0 +1,43 @@
+descriptions : Laravel seed file
+
+variables:
+  schema:
+    type: object
+    properties:
+      seeder_name:
+        type: string
+      table:
+        type: string
+      factory:
+        type: string
+      run_body:
+        type: string
+      quantity:
+        type: number
+        default: 1
+    required:
+        - seeder_name
+        - factory
+  form:
+    - *
+
+uses: 'php:class'
+
+definitions:
+  file_path: database/seeds
+  class_name: '{{seeder_name}}' #studly
+  extends: Seeder
+  imports: Illuminate\Database\Seeder
+  methods:
+    - uses: method
+      definitions:
+        method_name: run
+        method_scope: public
+        method_body : |
+          {% if factory is defined %}
+          factory({{ factory }}, {{ quantity  }})->create();
+          {%elseif run_body is defined%}
+          {{ run_body }}
+          {% endif %}
+
+

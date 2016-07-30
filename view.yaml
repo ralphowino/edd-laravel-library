@@ -1,0 +1,28 @@
+descriptions: Views contain the HTML served by your application and separate your controller / application logic from your presentation logic
+
+variables:
+  schema:
+    type: object
+    properties:
+      view_name:
+        type: string
+      view_body:
+        type: string
+      extends:
+        type: string
+    required:
+      - view_name
+  form:
+    - *
+
+uses: php:file
+
+definitions:
+  file_name: '{{view_name}}' #snake
+  file_suffix: '.blade.php'
+  file_path: 'resources/views'
+  php_code: |
+    {% if extends%}
+      @extends('{{extends}}')
+    {%endif%}
+    {{view_body}}

@@ -1,0 +1,33 @@
+descriptions: Contains phpUnit test definitions
+
+uses: php:class
+
+variables:
+  schema:
+    type: object
+    properties:
+      test_name:
+        type: string
+    required:
+      - test_name
+
+  form:
+    - *
+
+definitions:
+  class_name: '{{test_name}}' #studly
+  extends: TestCase
+  file_path: tests/
+  imports:
+     - Illuminate\Foundation\Testing\WithoutMiddleware;
+     - Illuminate\Foundation\Testing\DatabaseMigrations;
+     - Illuminate\Foundation\Testing\DatabaseTransactions;
+
+  methods:
+    - uses: method
+      definitions:
+        method_name: testExample
+        method_body: $this->assertTrue(true)
+        method_scope: public
+
+

@@ -1,0 +1,41 @@
+descriptions : contains database schema definations
+
+uses: php:class
+
+variables:
+  schema:
+    type: object
+    properties:
+      migration_name:
+        type: string
+      table_name:
+        type: string
+      down_method_body:
+        type: string
+      timestamp:
+        type: timestamp
+      up_method_body:
+        type: string
+    required:
+      - migration_name
+      - table_name
+
+  form:
+    - *
+
+definitions:
+  class_name: '{{migration_name}}'
+  file_name: '{{timestamp}}''{{migration_name}}' #snake
+  extends: Migration
+  file_path: database/migrations/
+  imports:
+    - Illuminate\Database\Schema\Blueprint
+    - Illuminate\Database\Migrations\Migration
+
+  methods:
+    - method_body: '{{down_method_body}}'
+      method_name: down
+      method_scope: public
+    - method_body: '{{up_method_body}}'
+      method_name: up
+      method_scope: public

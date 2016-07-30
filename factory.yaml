@@ -1,0 +1,25 @@
+description: Its the default set of attributes for Eloquent models,used during testing.
+
+variables:
+  schema:
+    type: object
+    properties:
+      model_name:
+        type: string
+      fake_data:
+        type: array
+    required:
+      - model_name
+  form:
+    - *
+
+uses: php:file
+
+definitions:
+  php_code: |
+    $factory->define('{{ model_name }}'::class, function(Faker\Generator $faker){
+      return {{ fake_data }}
+    });
+  file_name : ModelFactory
+  file_path : database/models
+

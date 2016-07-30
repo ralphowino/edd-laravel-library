@@ -1,0 +1,64 @@
+description: an artisan command file
+
+uses: php:class
+
+variables:
+  schema:
+    type: object
+
+    properties:
+      command_name:
+        type: string
+
+      constructor_body:
+        type: string
+        default: '//Todo:  implement method'
+
+      description:
+        type: string
+
+      signature:
+        type: string
+
+      handle_body:
+        type: string
+        default: '//Todo:  implement method'
+
+    required:
+      - command_name
+      - description
+      - signature
+
+  form:
+    - *
+
+definitions:
+  class_name: '{{command_name}}' #studly
+  extends: Command
+  file_path: app/Console/Commands/
+
+  implements:
+    - interface_name: SelfHandling
+
+  imports:
+    - import_name: Illuminate\Console\Command
+
+  namespace: App\Console\Commands
+
+  methods:
+    - method_name: __construct
+      method_scope: public
+      method_body: '{{constructor_body}}'
+
+    - method_name: handle
+      method_scope: public
+      method_body: '{{handle_body}}'
+
+  properties:
+    - property_name: description
+      property_scope: protected
+      property_type: string
+
+    - property_name: signature
+      property_scope: protected
+      property_type: string

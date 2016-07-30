@@ -1,0 +1,20 @@
+descriptions: contains all the methods used in tests
+
+variables:
+  schema:
+    type: object
+    properties:
+      method_name:
+        type: string
+      method_body:
+        type: string
+
+    required:
+      - method_name
+  form:
+    - *
+
+definitions:
+  method_name: '{{method_name}}' #snake
+  scope: public
+  method_body: '{{method_body}}'

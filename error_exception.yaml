@@ -1,0 +1,51 @@
+description: describes HTTP error codes from the server
+
+variables:
+  schema:
+    type: object
+    properties:
+      report_body:
+        type: string
+      render_body:
+        type: string
+      exception_name:
+        type: string
+    required:
+      - exception_name
+  form:
+    - *
+
+uses: php:class
+
+definitions:
+  class_name: '{{ exception_name}}' #studly
+  file_path : app/Exceptions/
+  namespace : App\Exceptions
+  imports:
+    - Exception
+    - Illuminate\Validation\ValidationException
+    - Illuminate\Auth\Access\AuthorizationException
+    - Illuminate\Database\Eloquent\ModelNotFoundException
+    - Symfony\Component\HttpKernel\Exception\HttpException
+    - Illuminate\Foundation\Exceptions\Handler as ExceptionHandler
+
+  extends: ExceptionHandler
+  properties :
+    - uses: object_property
+      definitions:
+        property_name: dontReport
+        property_type: string
+        property_scope: protected
+  methods:
+    - uses: method
+      definitions:
+        method_body: '{{ report_body }}'
+        method_name: report
+        method_scope: public
+    - uses: method
+      definitions:
+        method_body: '{{render_body}}'
+        method_name: render
+        method_scope: public
+
+

@@ -1,0 +1,41 @@
+description: used to provide a convenient mechanism for filtering HTTP requests entering an  application.
+
+variables:
+  schema:
+    type: object
+    properties:
+      middleware_name:
+        type: string
+      handle_body:
+        type: string
+      next:
+        type: Closure
+      request:
+        type: object
+    required:
+      - middleware_name
+  form:
+    - *
+
+uses: php:class
+
+definitions:
+  class_name: '{{ middleware_name}}' #studly
+  file_path: app/Http/Middleware
+  imports: Closure
+  methods:
+    - uses: method
+      definitions:
+        method_name: handle
+        method_body: |
+            {{ handle_body }}
+            return next(request);
+        method_params:
+          - next
+          - request
+        method_scope: public
+
+
+  namespace: App\Http\Middleware
+
+

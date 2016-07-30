@@ -1,0 +1,25 @@
+description: returns an array of configuration values
+
+uses: php:file
+
+variables:
+  schema:
+    type: object
+
+    properties:
+      config_name:
+          type: string
+      config_options:
+          type: array
+
+    required:
+      - config_name
+
+  form:
+    - *
+
+definitions:
+  file_name: '{{config_name}}' #snake
+  file_path: config/
+  php_code: |
+      return {{ config_options }};

@@ -1,0 +1,30 @@
+description: a special class that provides a static interface to objects in the service container
+
+uses:   php:class
+
+variables:
+  schema:
+    type: object
+    properties:
+      facade_name:
+        type: string
+      service_name:
+        type: string
+    required:
+      - facade_name
+      - service_name
+  form:
+    - *
+
+definitions:
+  class_name: '{{facade_name}}' #studly
+  imports: Illuminate\Support\Facades\Facade
+  extends: Facade
+  methods:
+  - uses: method
+    definitions:
+      method_body: 'return {{service_name}}'
+      method_name: getFacadeAccessor
+      method_scope: protected
+      method_type: static
+

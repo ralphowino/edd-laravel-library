@@ -1,0 +1,49 @@
+description: job is concerned with handling various tasks for you to defer the processing of a time consuming task such as sending an e-mail until a later time which drastically speeds up web requests to your application.
+
+variables:
+  schema:
+    type: object
+    properties:
+      job_name:
+        type: string
+      __construct_body:
+        type: string
+      handler_body:
+        type: string
+    required:
+      - job_name
+  form:
+    - *
+
+uses: php:class
+
+definitions:
+  class_name: '{{job_name}}' #studly
+  extends: Job
+  file_path: app/Jobs/
+
+  implements: ShouldQueue
+
+  imports:
+    - Illuminate\Contracts\Queue\SelfHandling
+    - Illuminate\Contracts\Queue\ShouldQueue
+    - Illuminate\Queue\SerializesModel
+  method:
+    - uses: method
+      definitions:
+        method_name: __construct
+        method_scope: public
+        method_body: '{{construct_body}}'
+
+    - uses: method
+      definitions:
+        method_name: handler
+        method_scope: public
+        method_body: '{{handler_body}}'
+
+  traits:
+    - InteractsWithQueue
+    - SerializesModels
+
+  namespace: App\Jobs\Job
+

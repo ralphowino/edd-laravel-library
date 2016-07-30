@@ -1,0 +1,39 @@
+description: controller is concerned with the traffic/logic between the Views and Models concerning User Management
+
+uses: laravel:controller
+
+definitions:
+  file_path: app/Http/Controllers/Auth
+  imports:
+    - Illuminate\Foundation\Auth\ThrottlesLogins
+    - Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers
+    - Validator
+
+  methods:
+    - uses: method
+      definitions:
+        method_name: __construct
+        method_scope: public
+
+    - uses: method
+      definitions:
+        method_name: validator
+        method_scope: public
+
+    - uses: method
+      definitions:
+        method_name: create
+        method_scope: public
+
+  namespace :  App\Http\Controllers\Auth
+
+  properties :
+    - uses : object_property
+      definitions :
+        property_name : redirectTo
+        property_scope : protected
+
+  traits:
+    - AuthenticatesAndRegistersUsers
+    - ThrottlesLogins
+

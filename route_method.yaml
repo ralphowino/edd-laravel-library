@@ -1,0 +1,42 @@
+descriptions : it's where all the laravel routes are defined
+
+variables:
+  schema:
+    type: object
+    properties:
+      controller_name:
+        type: string
+      controller_method:
+        type: string
+        condition: route_type != resource
+      route_as:
+        type: string
+      route_name:
+        type: string
+      route_type:
+        type: string
+        enum:
+            - resource
+            - get
+            - put
+            - post
+            - delete
+    required:
+      - controller_name
+      - route_type
+  form:
+    - *
+
+definitions :
+  route: |
+    <%if route_type === resource %>
+      Route::resource({route_name}, {controller_name});
+    <%elseif route_type === get %>
+      Route::get({route_name},{controller_name}@{controller_method});
+    <%elseif route_type === put %>
+      Route::put({route_name},{controller_name}@{controller_method});
+    <%if route_type === post %>
+      Route::post({route_name},{controller_name}@{controller_method});
+    <%elseif route_type === delete %>
+      Route::delete({route_name},{controller_name}@{controller_method});
+    <% end if%>

@@ -1,0 +1,56 @@
+description: allows you to subscribe and listen for events in your application.
+
+variables:
+  schema:
+    type: object
+    properties:
+      event_name:
+        type: string
+      broadcastOn_body:
+        type: string
+      construct_body:
+        type: string
+    required:
+      - event_name
+  form:
+    - *
+
+uses: php:class
+
+definitions:
+  class_name: '{{event_name}}' #studly
+  extends: Event
+  file_path: app/Events
+  imports :
+    - App\Events\Event
+    - Illuminate\Queue\SerializesModels
+    - Illuminate\Contracts\Broadcasting\ShouldBroadcast
+
+  methods :
+    - uses : method
+      definitions:
+        method_body: '{{construct_body}}'
+        method_name: __construct
+        method_scope: public
+
+    - uses : method
+      definitions:
+        method_body: '{{broadcastOn_body}}'
+        method_name: broadcastOn
+        method_scope: public
+        return_type: array
+
+  namespace : App\Events
+  traits: SerializesModels
+
+
+
+
+
+
+
+
+
+
+
+
