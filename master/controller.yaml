@@ -49,8 +49,8 @@ variables:
     - destroy
 
 definitions:
-  class_name: "{{controller_name | capitalize}}Controller"
-  file_name: '{{controller_name | str_studly}}Controller'
+  class_name: "{{controller_name}}Controller" #capitalize
+  file_name: '{{controller_name}}Controller' #studly
   file_path: app/Http/Controllers
   namespace: App\Http\Controllers
   imports:
