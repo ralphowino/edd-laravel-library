@@ -8,15 +8,28 @@ variables:
     properties:
       authorize_body:
         type: string
-      rules_body:
+      request_rules:
         type: array
-      request_name:
-        type: string
+        properties:
+          field:
+            type: string
+          rules:
+            type: array
+            properties:
+              rule:
+                type: string
+              parameters:
+                type: array
+                properties:
+                  parameter:
+                    type: string
+          request_name:
+              type: string
     required:
       - request_name
 
   form:
-    - *
+    - '*'
 
 definitions:
   class_name: '{{request_name}}' #studly

@@ -1,0 +1,34 @@
+descriptions : it's where all the laravel routes are defined
+
+uses: 'base:text'
+
+variables:
+  schema:
+    type: object
+    properties:
+      route_method:
+        type: string
+        enum:
+            - resource
+            - get
+            - put
+            - post
+            - delete
+      route_uri:
+        type: string
+      controller_name:
+        type: string
+      controller_method:
+        type: string
+        condition: "!model.route_method == 'resource'"
+    required:
+      - controller_name
+  form:
+    - '*'
+
+definitions :
+    file_name: routes
+    file_extension: .php
+    file_path: app/Http
+    content: |
+      Route::{{route_method}}('{{route_uri}}','{{controller_name}}{{controller_method ? "@" ~ controller_method}}');

@@ -11,60 +11,188 @@ variables:
       resourceful:
           type: boolean
           default: false
+      model_name:
+          type: string
+          default: '{{ controller_name }}' #controller_name studly, singular
+          condition: model.resourceful
+      constructor:
+        type: boolean
+        default: false
+      constructor_injects:
+        type: array
+        condition: model.constructor
+        properties:
+          type:
+            type: string
+          variable:
+            type: string
+      constructor_middleware:
+        type: array
+        condition: model.constructor
+        properties:
+          name:
+            type: string
+            required: true
+          excludes:
+            type: array
+            properties:
+              method:
+                type: string
+          only:
+            type: array
+            properties:
+              method:
+                type: string
       index:
           type: boolean
           default: true
-          condition: resourceful
+          condition: model.resourceful
+          action:
+            type: push_if_absent
+            destination: methods
+            source:
+              method_name: index
+              method_scope: public
+              method_body: '{{index_body}}'
+      index_body:
+          type: code
+          default: |
+           $data['{{controller_name}}'] = {{ model_name }}::get(); #controller_name snake
+                   return view('${{controller_name}}.index', $data); #controller_name snake
       create:
           type: boolean
           default: true
-          condition: resourceful
+          condition: model.resourceful
+          action:
+            type: push_if_absent
+            destination: methods
+            source:
+              method_name: create
+              method_scope: public
+              method_body: '{{create_body}}'
+      create_body:
+          type: code
+          default: |
+                $data = [];
+                        return view('${{controller_name}}.create', $data); #controller_name snake
       store:
           type: boolean
           default: true
-          condition: resourceful
+          condition: model.resourceful
+          action:
+            type: push_if_absent
+            destination: methods
+            source:
+              method_name: store
+              method_scope: public
+              method_parameters:
+                -
+                  param_type: Request
+                  param_name: request
+              method_body: '{{store_body}}'
+      store_body:
+          type: code
+          default: |
+                $this->validate($request, []);
+                        {{ model_name }}::create($request->all());
+                        return redirect(route('${{controller_name}}.index')); #controller_name snake
+
+      show:
+        type: boolean
+        default: true
+        condition: model.resourceful
+        action:
+          type: push_if_absent
+          destination: methods
+          source:
+            method_name: show
+            method_scope: public
+            method_parameters:
+              -
+                param_name: id
+            method_body: '{{show_body}}'
+      show_body:
+        type: code
+        default: |
+              $data['{{controller_name}}'] = {{ model_name }}::findOrFail($id); #controller_name snake, singular
+                      return view('${{controller_name}}.show', $data); #controller_name snake
+
       edit:
           type: boolean
           default: true
-          condition: resourceful
+          condition: model.resourceful
+          action:
+            type: push_if_absent
+            destination: methods
+            source:
+              method_name: edit
+              method_scope: public
+              method_parameters:
+                -
+                  param_name: id
+              method_body: '{{edit_body}}'
+      edit_body:
+          type: code
+          default: |
+            $data['{{controller_name}}'] = {{ model_name }}::findOrFail($id); #controller_name snake, singular
+                    return view('${{controller_name}}.edit', $data); #controller_name snake
+
       update:
           type: boolean
           default: true
-          condition: resourceful
+          condition: model.resourceful
+          action:
+            type: push_if_absent
+            destination: methods
+            source:
+              method_name: update
+              method_scope: public
+              method_parameters:
+                -
+                  param_type: Request
+                  param_name: request
+                -
+                  param_name: id
+              method_body: '{{update_body}}'
+      update_body:
+          type: code
+          default: |
+            $this->validate($request, []);
+            ${{controller_name}} = {{ model_name }}::findOrFail($id); #controller_name snake, singular
+            ${{controller_name}}->update($request->all()); #controller_name snake, singular
+            return redirect(route('${{controller_name}}.index')); #controller_name snake
       destroy:
           type: boolean
           default: true
-          condition: resourceful
+          condition: model.resourceful
+          action:
+            type: push_if_absent
+            destination: methods
+            source:
+              method_name: destroy
+              method_scope: public
+              method_parameters:
+                -
+                  param_name: id
+              method_body: '{{destroy_body}}'
+      destroy_body:
+          type: code
+          default: |
+                {{ model_name }}::destroy($id);
+                        return redirect(route('${{controller_name}}.index')); #controller_name snake
     required:
       - controller_name
       - resourceful
   form:
-    - controller_name
-    - resourceful
-    - index
-    - create
-    - store
-    - edit
-    - update
-    - destroy
+    - '*'
 
 definitions:
-  class_name: "{{controller_name}}Controller" #capitalize
-  file_name: '{{controller_name}}Controller' #studly
-  file_path: app/Http/Controllers
-  namespace: App\Http\Controllers
-  imports:
-    -
-      import_name: App\Http\Requests
-    -
-      import_name: Illuminate\Http\Request
-  extends: Controller
-  methods:
-    -
-      method_name: getAttribute
-      method_body: '//Todo: implement {{trait_name}}::{{method.method_name}}'
-      method_scope: public
-      method_parameters:
-        -
-          param_type: string
-          param_name: attr
+   class_name: '{{ controller_name}}Controller' #studly
+   file_path: app/Http/Controllers
+   namespace: App\Http\Controllers
+   imports:
+      -
+        import_name: App\Http\Requests
+      -
+        import_name: Illuminate\Http\Request
+   extends: Controller

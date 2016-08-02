@@ -1,0 +1,64 @@
+description: Define a model relationship
+
+uses: 'php:method'
+
+variables:
+  schema:
+    type: object
+    properties:
+      model_name:
+        type: string
+      relationship_name:
+        type: string
+      relationship_type:
+        type: string
+        enum:
+          - hasMany
+          - belongsTo
+          - hasOne
+          - belongsToMany
+          - hasManyThrough
+          - morphTo
+          - morphToMany
+      related:
+        type: string
+      foreign_key:
+        type: string
+      other_key:
+        type: string
+      withTimestamp:
+        type: boolean
+      withPivot:
+        type: array
+        properties:
+          column_name:
+            type: string
+      wherePivot:
+        type: array
+        properties:
+          type:
+            type: string
+            enum:
+              - where
+              - whereIn
+          value:
+            type: any
+          column:
+            type: string
+    required:
+      - model_name
+      - relationship_name
+      - relationship_type
+      - related
+
+  form:
+    - '*'
+
+definitions:
+  file_name: '{{model_name}}' #studly
+  file_extension: '.php'
+  file_path: app
+  method_name: '{{relationship_name}}'
+  method_scope: public
+  method_body: 'return $this->{{ relationship_type }}();'
+

@@ -1,0 +1,7 @@
+{
+  "name": "Laravel",
+  "slug": "laravel",
+  "dependencies": {
+    "ralphowino/edd-php-library": "master"
+  }
+}

@@ -1,0 +1,128 @@
+type: complex
+variables:
+  schema:
+    type: object
+    properties:
+      resource_name:
+        type: string
+        title: Resource name(singular)
+        description: Singular version of the name of the resource/entity
+      resource_collection:
+        type: string
+        default: '{{resource_name}}' #plural
+        title: Resource Collection
+        description: Plural version of the resource name
+      resource_fields:
+        type: array
+        properties:
+           field_name:
+              type: string
+              title: Name
+              description: Field name - human friendly
+              required: true
+           slug:
+              type: string
+              title: Slug
+              description: Unique field identifier
+              default: '{{ field_name}}' #snake
+           nullable:
+              type: string
+              title: nullable
+              description:
+              default: false
+           unique:
+              type: boolean
+              title: unique
+              description:
+              default: false
+           primary:
+              type: boolean
+              title: primary
+              description:
+              default: false
+           index:
+              type: boolean
+              title: index
+              description:
+              default: false
+           default:
+              type: string
+              title: default
+              description: ''
+        actions:
+          -
+            type: map_and_push_if_absent
+            destination: migration_fields
+            mapping:
+               type: type
+               name: slug
+               nullable: nullable
+               unique: unique
+               primary: primary
+               index: index
+               default: default
+          -
+            type: pluck_and_push_if_absent
+            destination: model_fillable
+            mapping: slug
+            condition: fillable
+      view_extends:
+        type: string
+        title: Base Layout
+        default: 'layouts.app'
+    required:
+      -resource_name
+  form:
+    - '*'
+definitions:
+  - uses: 'laravel:model'
+    definitions:
+      model_name: '{{resource_name}}' #studly
+      table_name: '{{resource_collection}}' #snake
+
+  - uses: 'laravel:migration'
+    definitions:
+      table_name: '{{resource_collection}}' #snake
+      type: create
+
+  - uses: 'laravel:controller'
+    definitions:
+      controller_name: '{{resource_collection}}' #studly
+      resourceful: true
+      model_name: '{{resource_name}}' #studly
+
+  - uses: 'laravel:factory'
+    definitions:
+      model_name: '{{resource_name}}' #studly
+
+  - uses: 'laravel:seeder'
+    definitions:
+      seeder_name: '{{resource_name}}TableSeeder'
+      table: '{{resource_name}}'
+      factory: '{{resource_name}}' #studly
+
+  - uses: 'laravel:view'
+    definitions:
+      view_name: '{{resource_collection}}.index'
+      extends: '{{view_extends}}'
+
+  - uses: 'laravel:view'
+    definitions:
+      view_name: '{{resource_collection}}.create'
+      extends: '{{view_extends}}'
+
+  - uses: 'laravel:view'
+    definitions:
+      view_name: '{{resource_collection}}.edit'
+      extends: '{{view_extends}}'
+
+  - uses: 'laravel:view'
+    definitions:
+      view_name: '{{resource_collection}}.show'
+      extends: '{{view_extends}}'
+
+#  - uses: 'laravel:route'
+#    definitions:
+#      method: resource
+#      handle: '{{resource_collection}}Controller'
+#      uri: '{{resource_collection}}'

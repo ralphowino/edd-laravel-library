@@ -19,7 +19,7 @@ variables:
         - seeder_name
         - factory
   form:
-    - *
+    - '*'
 
 uses: 'php:class'
 

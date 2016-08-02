@@ -25,7 +25,7 @@ variables:
       - controller_name
       - route_type
   form:
-    - *
+    - '*'
 
 definitions :
   route: |

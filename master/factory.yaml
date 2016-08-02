@@ -6,20 +6,37 @@ variables:
     properties:
       model_name:
         type: string
-      fake_data:
+      fields:
         type: array
+        properties:
+          fields:
+            type: string
+            required: true
+          type:
+            type: string
+            enum:
+              - faker_method
+              - faker_attribute
+              - plain_text
+          value:
+            type: string
     required:
       - model_name
   form:
-    - *
+   - '*'
 
 uses: php:file
 
 definitions:
   php_code: |
-    $factory->define('{{ model_name }}'::class, function(Faker\Generator $faker){
-      return {{ fake_data }}
+            {{""}}
+            $factory->define({{ model_name }}::class, function(Faker\Generator $faker){ #model_name studly
+              return [
+              {% for data in fake_data %}
+                '{{ data.key }}' => {{ data.value }},
+              {% endfor %}
+              ];
     });
-  file_name : ModelFactory
-  file_path : database/models
+     file_name: '{{ model_name }}Factory' #studly
+     file_path: database/factories
 

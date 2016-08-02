@@ -16,7 +16,7 @@ variables:
       - event
       - listener_name
   form:
-    - *
+    - '*'
 
 uses: php:class
 

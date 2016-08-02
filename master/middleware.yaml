@@ -15,7 +15,7 @@ variables:
     required:
       - middleware_name
   form:
-    - *
+    - '*'
 
 uses: php:class
 

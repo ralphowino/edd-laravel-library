@@ -13,16 +13,16 @@ variables:
     required:
       - view_name
   form:
-    - *
+    - '*'
 
-uses: php:file
+uses: 'base:file'
 
 definitions:
-  file_name: '{{view_name}}' #snake
-  file_suffix: '.blade.php'
+  file_name: '{{view_name}}' #replace(".","/")
+  file_extension: '.blade.php'
   file_path: 'resources/views'
-  php_code: |
+  file_content: |
     {% if extends%}
-      @extends('{{extends}}')
+      @extends('{{view_extends}}')
     {%endif%}
     {{view_body}}

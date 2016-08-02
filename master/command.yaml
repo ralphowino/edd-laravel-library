@@ -30,7 +30,7 @@ variables:
       - signature
 
   form:
-    - *
+    - "*"
 
 definitions:
   class_name: '{{command_name}}' #studly

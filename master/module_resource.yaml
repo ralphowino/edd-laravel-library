@@ -7,7 +7,7 @@ variables:
     required:
       - resource_name
   form:
-    - *
+    - '*'
 
 definitions :
   - uses: model

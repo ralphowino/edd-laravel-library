@@ -6,36 +6,115 @@ variables:
   schema:
     type: object
     properties:
-      migration_name:
-        type: string
       table_name:
         type: string
-      down_method_body:
+      type:
         type: string
-      timestamp:
-        type: timestamp
-      up_method_body:
+        enum:
+          - create
+          - alter
+          - drop
+      migration_name:
         type: string
+        default: '{{type}}_{{table_name}}_table' #type str_lower, table_name snake
+
+      fields:
+        type: array
+        properties:
+          name:
+            type: string
+                title: Slug
+                description: Unique field identifier
+                default: '{{ field_name }}' #snake
+          type:
+            type: string
+              title: Type
+              enum:
+                - string
+                - boolean
+                - integer
+                - text
+                - email
+              description: This is the type of the field
+              default: 'string'
+          nullable:
+            type: boolean
+            title: nullable
+            description: Sets the field to be a nullable field
+            default: false
+          unique:
+            type: boolean
+            title: unique
+            description: Sets the field to be unique
+            default: false
+          primary:
+            type: boolean
+            title: primary
+            description: Sets the field to be a primary key in the table
+              default: false
+            index:
+              type: boolean
+              title: index
+              description: Index the field
+              default: false
+            default:
+              type: string
+              title: default
+              description: Sets the default value for the field
+            rename:
+              type: string
+              title: rename
+              description: takes in the name to rename the fields as
     required:
       - migration_name
       - table_name
-
+      - type
   form:
-    - *
+    - '*'
 
 definitions:
-  class_name: '{{migration_name}}'
-  file_name: '{{timestamp}}''{{migration_name}}' #snake
+    class_name: '{{migration_name}}' #studly
+    file_name: '{{"now"}}_{{ type }}_{{migration_name}}' #now date("Y_m_d_His"), migration_name snake
   extends: Migration
   file_path: database/migrations/
   imports:
-    - Illuminate\Database\Schema\Blueprint
-    - Illuminate\Database\Migrations\Migration
+      -
+        import_name: Illuminate\Database\Schema\Blueprint
+      -
+        import_name:  Illuminate\Database\Migrations\Migration
 
   methods:
-    - method_body: '{{down_method_body}}'
+      -
+          method_body: |
+            Schema::{% if type == 'create' %}create{% else %}table{% endif %}('{{table_name}}', function(Blueprint $table){
+              {% for field in fields %}
+                {% if field.rename %}
+                  $table->rename('{{ field.name }}', '{{ field.rename }}');
+                {% else %}
+                  $table->{{field.type}}('{{field.name}}'){% if field.nullable %}->nullable(){% endif %}{% if field.unique %}->unique(){% endif %}{% if field.default %}->default('{{ field.default }}'){% endif %};
+                {% endif %}
+              {% endfor %}
+
+                  $table->index([{% for field in fields %}{% if field.index %}'{{ field.name }}',{% endif %}{% endfor %}]);
+                  $table->primary([{% for field in fields %}{% if field.primary %}'{{ field.name }}',{% endif %}{% endfor %}]);
+            });
+          method_name: up
+          method_scope: public
+      -
+          method_body: |
+            {% if type == 'create' %}
+              Schema::drop('{{table_name}}');
+            {% else %}
+              //Maybe you should change some of the undo functions for the fields.
+              Schema::table('{{table_name}}', function(Blueprint $table) {
+                  {% for field in fields %}
+                     {% if field.rename %}
+                        $table->rename('{{ field.rename }}', '{{ field.name }}');
+                     {% else %}
+                        $table->dropColumn('{{field.name}}');
+                     {% endif %}
+                  {% endfor %}
+              });
+            {% endif %}
       method_name: down
-      method_scope: public
-    - method_body: '{{up_method_body}}'
-      method_name: up
       method_scope: public

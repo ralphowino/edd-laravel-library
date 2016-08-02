@@ -13,7 +13,7 @@ variables:
     required:
       - job_name
   form:
-    - *
+    - '*'
 
 uses: php:class
 

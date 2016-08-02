@@ -12,7 +12,7 @@ variables:
     required:
       - method_name
   form:
-    - *
+    - '*'
 
 definitions:
   method_name: '{{method_name}}' #snake

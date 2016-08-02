@@ -12,7 +12,7 @@ variables:
       - test_name
 
   form:
-    - *
+    - '*'
 
 definitions:
   class_name: '{{test_name}}' #studly

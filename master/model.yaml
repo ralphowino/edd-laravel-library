@@ -6,27 +6,165 @@ variables :
     properties:
       model_name:
         type: string
-      table_name :
+      table:
+        description: The table associated with the model.
         type : string
+      model_boot:
+        type: boolean
+        action:
+          type: push_if_absent
+          destination: methods
+          source:
+            method_name: boot
+            method_scope: public
+            method_static: true
+            method_body: |
+              parent::boot();
+              {% if(model_boot_events) %}
+                {% for event in model_boot_events %}
+                      static::{{event.event_type}}(function ($model){
+                          {{event.event_body}}
+                      });
+                {% endfor %}
+              {% endif %}
+
+      model_boot_events:
+        type: array
+        condition: model.model_boot
+        properties:
+          event_type:
+            type: string
+            required: true
+          event_body:
+            type: code
+            default: '//Todo: write event code'
+      model_fillable:
+        type: array
+        description: The attributes that are mass assignable.
+        items:
+          type: string
+        action:
+          type: push_if_absent
+          destination: properties
+          source:
+            property_name: fillable
+            property_scope: protected
+            property_value: '{{ model_fillable}}' #json_encode
+      guarded:
+        type: array
+        description: The attributes that aren't mass assignable.
+        items:
+          type: string
+      hidden:
+        type: array
+        description: The attributes that should be hidden for arrays
+        items:
+          type: string
+      visible:
+        type: array
+        description: The attributes that should be visible in arrays.
+        items:
+          type: string
+
+      appends:
+        description: The accessors to append to the model's array form.
+        type: array
+        items:
+          type: string
+
+      dates:
+        type: array
+        description: The attributes that should be mutated to dates.
+        items:
+          type: string
+
+      date_format:
+        description: The storage format of the model's date columns.
+        type: string
+
+      connection:
+        description: The connection name for the model.
+        type: string
+
+      primary_key:
+        description: The primary key for the model.
+        type: string
+      per_page:
+        description: The number of models to return for pagination.
+        type: int
+      incrementing:
+        description: Indicates if the IDs are auto-incrementing.
+        type: boolean
+
+      timestamps:
+        description: Indicates if the model should be timestamped.
+        type: boolean
+
+      relations:
+        description: The loaded relationships for the model.
+        type: array
+        items:
+          type: string
+
+      casts:
+        description: The attributes that should be cast to native types.
+        type: array
+        properties:
+          field_name:
+            type: string
+          cast_type:
+            type: string
+
+      touches:
+        description: The relationships that should be touched on save.
+        type: array
+        items:
+          type: string
+
+      with:
+        description: The relations to eager load on every query.
+        type: array
+        items:
+          type: string
+
+      created_at:
+        description: The name of the "created at" column.
+        type: string
+        action:
+          type: push_if_absent
+          destination: properties
+          source:
+            property_name: CREATED_AT
+            property_scope: const
+            property_value: "'{{created_at}}'"
+      updated_at:
+        description: The name of the "updated at" column.
+        type: string
+        action:
+          type: push_if_absent
+          destination: properties
+          source:
+            property_name: UPDATED_AT
+            property_scope: const
+            property_value: "'{{updated_at}}'"
     required:
       - model_name
   form:
-    - *
+    - '*'
 
-uses: php:class
+
+
+
+
+
+uses: 'php:class'
 
 definitions :
-  file_name: '{{model_name}}' #studly
   class_name: '{{model_name}}' #studly
   extends: Model
   file_path : app
-  imports : Illuminate\Database\Eloquent\Model
-  namespace : App
-  properties:
-    - property_name: table
-      property_scope: protected
-      property_type: string
+  imports:
+    -
+      import_name: 'Illuminate\Database\Eloquent\Model'
 
-    - property_name: signature
-      property_scope: protected
-      property_type: string
+  namespace : App

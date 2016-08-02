@@ -14,7 +14,7 @@ variables:
       - facade_name
       - service_name
   form:
-    - *
+    - '*'
 
 definitions:
   class_name: '{{facade_name}}' #studly

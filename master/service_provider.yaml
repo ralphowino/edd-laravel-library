@@ -15,7 +15,8 @@ variables:
       - provider_name
 
   form:
-    - *
+    - '*'
+
 uses: php:class
 
 definitions:
@@ -26,13 +27,13 @@ definitions:
 
   methods :
     - uses : method
-     definitions:
+      definitions:
         method_body: '{{boot_body}}'
         method_name: boot
         method_scope: public
 
     - uses : method
-     definitions:
+      definitions:
         method_body: '{{register_body}}'
         method_name: register
         method_scope: public

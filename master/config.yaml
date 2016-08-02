@@ -10,16 +10,21 @@ variables:
       config_name:
           type: string
       config_options:
-          type: array
+          type: code
 
     required:
       - config_name
 
   form:
-    - *
+    - '*'
 
 definitions:
   file_name: '{{config_name}}' #snake
   file_path: config/
   php_code: |
-      return {{ config_options }};
+      {{""}}
+      return [
+      {% for config in config_options %}
+        '{{ config.key }}' => {{ config.value }},
+      {% endfor %}
+      ];
